@@ -1,45 +1,24 @@
 import React from 'react'
 import { StackNavigator } from 'react-navigation'
 import Recipes from './screens/Recipes'
-import LoginScreen from './screens/Login'
-import IngredientsListScreen from './screens/IngredientsList'
-import { View, Button, Text } from 'react-native'
+import RecipeDetail from './screens/RecipeDetail'
+import Login from './screens/Login'
+import Ingredients from './screens/Ingredients'
+import { View, Button, Text, AppRegistry } from 'react-native'
 
-const RecipeScreen = ({ navigation }) => (
-  <Recipes
-    onShoppingCartPress={() => navigation.navigate('Details')}
-  />
+const AppNavigator = StackNavigator(
+  {
+    LoginScreen: { screen: Login },
+    IngredientsScreen: { screen: Ingredients },
+    RecipesScreen: { screen: Recipes },
+    RecipeDetailScreen: { screen: RecipeDetail },
+  },
+  {
+    headerMode: 'none',
+    mode: 'modal'
+  }
 )
 
-const DetailsScreen = ({ navigation }) => (
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    <Text>Details Screen</Text>
-    <Button
-      onPress={() => navigation.navigate('Recipes')}
-      title="Go to details"
-    />
-  </View>
-);
-
-const AppNavigator = StackNavigator({
-  First: { screen: LoginScreen },
-  Second: { screen: IngredientsListScreen },
-  Details: {
-    screen: DetailsScreen,
-    navigationOptions: {
-      headerTitle: 'Details'
-    }
-  },
-  Recipes: {
-    screen: RecipeScreen,
-    navigationOptions: {
-      headerTitle: 'Recipes'
-    },
-  },
-},
-{
-  headerMode: 'none'
-}
-)
+AppRegistry.registerComponent('AppNavigator', () => recipe)
 
 export default AppNavigator

@@ -1,10 +1,10 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableHighlight, AppRegistry } from 'react-native';
 import RecipePreview from '../components/RecipePreview';
 import Icon from 'react-native-vector-icons/Feather'
 import Swiper from 'react-native-swiper'
 
-export default class Recipes extends React.Component {
+export default class Recipes extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -52,8 +52,14 @@ export default class Recipes extends React.Component {
     this.swiper.scrollBy(-1, true)
   }
 
+  recipeSelected (stuff) {
+    console.log(stuff)
+    this.props.recipePress(stuff)
+  }
+
   render() {
     let recipes = this.state.recipes
+    const { navigate } = this.props.navigation
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
@@ -63,7 +69,7 @@ export default class Recipes extends React.Component {
               name='shopping-cart'
               size={25}
               color='black'
-              onPress={this.props.onShoppingCartPress}
+              onPress={navigate('IngredientsScreen')}
               backgroundColor='transparent'
               style={{
                 padding: 0, margin: 0
@@ -81,16 +87,22 @@ export default class Recipes extends React.Component {
             horizontal={true}
             loop={true}
           >
-            {Object.keys(recipes).map((recipeIndex) =>
-              <View style={styles.recipeContainer} key={recipeIndex}>
-                <RecipePreview
-                  recipeName={recipes[recipeIndex].recipe_name}
-                  imageURL={recipes[recipeIndex].imageURL}
-                  time={recipes[recipeIndex].time}
-                  difficulty={recipes[recipeIndex].difficulty}
-                  appliances={recipes[recipeIndex].appliances.split(',').join(' and ')}
-                />
-              </View>
+            {Object.keys(recipes).map((recipeIndex, index) =>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={() => navigate('RecipeDetailScreen', {userId: 'lrg006'})}
+                key={index}
+              >
+                <View style={styles.recipeContainer}>
+                  <RecipePreview
+                    recipeName={recipes[recipeIndex].recipe_name}
+                    imageURL={recipes[recipeIndex].imageURL}
+                    time={recipes[recipeIndex].time}
+                    difficulty={recipes[recipeIndex].difficulty}
+                    appliances={recipes[recipeIndex].appliances.split(',').join(' and ')}
+                  />
+                </View>
+              </TouchableOpacity>
             )}
           </Swiper>
         </View>
