@@ -1,6 +1,8 @@
 import React from 'react'
 import { StackNavigator } from 'react-navigation'
 import Recipes from './screens/Recipes'
+import LoginScreen from './screens/Login'
+import IngredientsListScreen from './screens/IngredientsList'
 import { View, Button, Text } from 'react-native'
 
 const RecipeScreen = () => (
@@ -18,6 +20,8 @@ const DetailsScreen = ({ navigation }) => (
 );
 
 const AppNavigator = StackNavigator({
+  First: { screen: LoginScreen },
+  Second: { screen: IngredientsListScreen },
   Details: {
     screen: DetailsScreen,
     navigationOptions: {
