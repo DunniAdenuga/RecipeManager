@@ -59,7 +59,16 @@ export default class Recipes extends React.Component {
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Recipes</Text>
           <View style={styles.ingredientsIcon}>
-            <Icon name='shopping-cart' size={25} color='black'/>
+            <Icon.Button
+              name='shopping-cart'
+              size={25}
+              color='black'
+              onPress={this.props.onShoppingCartPress}
+              backgroundColor='transparent'
+              style={{
+                padding: 0, margin: 0
+              }}
+            />
           </View>
         </View>
         <View style={styles.swiperContainer}>

@@ -3,8 +3,10 @@ import { StackNavigator } from 'react-navigation'
 import Recipes from './screens/Recipes'
 import { View, Button, Text } from 'react-native'
 
-const RecipeScreen = () => (
-  <Recipes />
+const RecipeScreen = ({ navigation }) => (
+  <Recipes
+    onShoppingCartPress={() => navigation.navigate('Details')}
+  />
 )
 
 const DetailsScreen = ({ navigation }) => (
