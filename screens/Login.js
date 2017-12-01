@@ -5,15 +5,41 @@ import * as firebase from 'firebase';
 import { TitledInput } from '../components/TitledInput'
 import Spinner from '../components/Spinner'
 
-
 export default class Login extends React.Component {
 
-  state = { email: '', password: '', error: '', loading: false};
+  constructor (props) {
+    super (props)
+    this.state = {
+      email: '',
+      name: '',
+      password: '',
+      error: '',
+      loading: false
+    }
+  }
 
   static navigationOptions = {
     title: 'Welcome',
     headerTintColor: 'blue'
   };
+
+  createUser (userId, name, password) {
+    firebase.database().ref('Users/' + userId).set(
+      {
+        name: name,
+        password: password
+      }
+    )
+  }
+
+  createUserIngredientsEntry (userId) {
+    firebase.database().ref('UserIngredients/' + userId).set({
+      bananas: {
+        quantity: 0,
+        type: ''
+      }
+    })
+  }
 
   onLoginPress(){
     this.setState({ error: '', loading: true});
@@ -22,14 +48,20 @@ export default class Login extends React.Component {
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState({error: '', loading: false});
-        navigate('IngredientsScreen', {userId: this.state.email.split('@')[0]})
+        navigate('RecipesScreen', {userId: this.state.email.split('@')[0]})
       })
       .catch(() => {
         //Login was not successful, let's create a new account()
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(() => {
               this.setState({ error: '', loading: false});
-              navigate('RecipesScreen', {userId: this.state.email.split('@')[0]})
+              this.createUser(
+                this.state.email.split('@')[0],
+                this.state.name,
+                this.state.password
+              )
+              this.createUserIngredientsEntry(this.state.email.split('@')[0])
+              navigate('IngredientsScreen', {userId: this.state.email.split('@')[0]})
             })
             .catch(() => {
                 this.setState({error: 'Authentication failed.', loading: false});
@@ -60,6 +92,12 @@ export default class Login extends React.Component {
           placeholder ='you@domain.com'
           value={this.state.email}
           onChangeText={email => this.setState({email})}
+        />
+        <TitledInput
+          label='Name'
+          placeholder ='Jane Doe'
+          value={this.state.name}
+          onChangeText={name => this.setState({name})}
         />
         <TitledInput
           label='Password'

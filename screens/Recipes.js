@@ -39,6 +39,8 @@ export default class Recipes extends Component {
   }
 
   componentWillMount () {
+    const { params } = this.props.navigation.state
+    console.log(params)
     this.setState({
       recipeList: Object.keys(this.state.recipes)
     })
@@ -69,7 +71,7 @@ export default class Recipes extends Component {
               name='shopping-cart'
               size={25}
               color='black'
-              onPress={navigate('IngredientsScreen')}
+              onPress={() => navigate('IngredientsScreen')}
               backgroundColor='transparent'
               style={{
                 padding: 0, margin: 0
