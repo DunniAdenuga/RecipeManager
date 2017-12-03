@@ -40,7 +40,7 @@ export default class Recipes extends Component {
 
   componentWillMount () {
     const { params } = this.props.navigation.state
-    console.log(params)
+    console.log('mounting recipes', params)
     this.setState({
       recipeList: Object.keys(this.state.recipes)
     })
@@ -62,6 +62,8 @@ export default class Recipes extends Component {
   render() {
     let recipes = this.state.recipes
     const { navigate } = this.props.navigation
+    const { params } = this.props.navigation.state
+    console.log('in render', params, params.userId)
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
@@ -71,7 +73,7 @@ export default class Recipes extends Component {
               name='shopping-cart'
               size={25}
               color='black'
-              onPress={() => navigate('IngredientsScreen')}
+              onPress={() => navigate('IngredientsScreen', {userId: params.userId})}
               backgroundColor='transparent'
               style={{
                 padding: 0, margin: 0
@@ -148,7 +150,7 @@ export default class Recipes extends Component {
 
           </View>
         </View>
-        <Text>Swipe up to see more</Text>
+        <Text>Tap a recipe to see more</Text>
       </View>
     );
   }

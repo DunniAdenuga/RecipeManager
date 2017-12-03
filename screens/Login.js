@@ -33,12 +33,14 @@ export default class Login extends React.Component {
   }
 
   createUserIngredientsEntry (userId) {
+    const { navigate } = this.props.navigation
     firebase.database().ref('UserIngredients/' + userId).set({
       bananas: {
         quantity: 0,
         type: ''
       }
     })
+    .then(navigate('IngredientsScreen', {userId: this.state.email.split('@')[0]}))
   }
 
   onLoginPress(){
@@ -61,7 +63,6 @@ export default class Login extends React.Component {
                 this.state.password
               )
               this.createUserIngredientsEntry(this.state.email.split('@')[0])
-              navigate('IngredientsScreen', {userId: this.state.email.split('@')[0]})
             })
             .catch(() => {
                 this.setState({error: 'Authentication failed.', loading: false});
