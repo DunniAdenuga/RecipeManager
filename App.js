@@ -4,6 +4,8 @@ import RecipePreview from './components/RecipePreview';
 import Icon from 'react-native-vector-icons/Feather'
 import Swiper from 'react-native-swiper'
 import Recipes from './screens/Recipes'
+import LoginScreen from './screens/Login'
+import IngredientsListScreen from './screens/IngredientsList'
 import AppNavigator from './Navigator'
 
 
