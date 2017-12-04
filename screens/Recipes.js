@@ -8,6 +8,7 @@ export default class Recipes extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      recipeIds: [0, 1, 2],
       recipes: {
         0: {
           imageURL: 'http://www.simplyrecipes.com/wp-content/uploads/2014/08/banana-bread-horiz-a-1600.jpg',
@@ -31,6 +32,7 @@ export default class Recipes extends Component {
           recipe_name: 'Grilled Chicken'
         }
       },
+      recipesTwo: {},
       recipeList: [],
       currRecipeIndex: 0,
       prevRecipeButtonShowing: false,
@@ -38,32 +40,49 @@ export default class Recipes extends Component {
     }
   }
 
+  async getRecipeFromId (recipeId) {
+    try {
+      let response = await fetch(`https://testfirebase-5e2e2.firebaseio.com/Recipes/${recipeId}.json`)
+      let responseJson = await response.json()
+      return responseJson
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   componentWillMount () {
     const { params } = this.props.navigation.state
-    console.log('mounting recipes', params)
+    let recipesTwo = this.state.recipesTwo
     this.setState({
       recipeList: Object.keys(this.state.recipes)
     })
+    {this.state.recipeIds.forEach((recipeId) => {
+      this.getRecipeFromId(recipeId)
+        .then((newRecipe) => {
+          recipesTwo[recipeId] = newRecipe
+          this.setState({
+            recipesTwo
+          })
+        })
+    })}
   }
 
   nextRecipe () {
-    this.swiper.scrollBy(1, true)
+    this.swiper.scrollBy(1)
   }
 
   prevRecipe () {
-    this.swiper.scrollBy(-1, true)
+    this.swiper.scrollBy(-1)
   }
 
   recipeSelected (stuff) {
-    console.log(stuff)
     this.props.recipePress(stuff)
   }
 
   render() {
-    let recipes = this.state.recipes
+    let recipes = this.state.recipesTwo
     const { navigate } = this.props.navigation
     const { params } = this.props.navigation.state
-    console.log('in render', params, params.userId)
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
@@ -94,12 +113,12 @@ export default class Recipes extends Component {
             {Object.keys(recipes).map((recipeIndex, index) =>
               <TouchableOpacity
                 activeOpacity={0.6}
-                onPress={() => navigate('RecipeDetailScreen', {userId: 'lrg006'})}
-                key={index}
+                onPress={() => navigate('RecipeDetailScreen', {userId: params.userId, recipeId: recipeIndex})}
+                key={recipeIndex}
               >
                 <View style={styles.recipeContainer}>
                   <RecipePreview
-                    recipeName={recipes[recipeIndex].recipe_name}
+                    recipeName={recipes[recipeIndex].name}
                     imageURL={recipes[recipeIndex].imageURL}
                     time={recipes[recipeIndex].time}
                     difficulty={recipes[recipeIndex].difficulty}
@@ -169,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     borderWidth: 1,
     borderColor: 'black',
-    marginBottom: 60,
+    marginBottom: 10,
     paddingBottom: 10,
     display: 'flex',
     flexDirection: 'row',
@@ -185,7 +204,7 @@ const styles = StyleSheet.create({
     bottom: 15
   },
   swiperContainer: {
-    height: '50%',
+    height: '60%',
     marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'center'

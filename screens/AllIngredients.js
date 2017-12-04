@@ -90,7 +90,8 @@ export default class UserIngredients extends React.Component {
 const styles = StyleSheet.create({
   ingredientsContainer: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    backgroundColor: 'white'
   },
   header: {
     height: '10%',

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Button, TouchableOpacity, ScrollView } from 'react-native';
+import * as firebase from 'firebase';
 
 export default class RecipeDetail extends Component {
 
@@ -28,75 +29,127 @@ export default class RecipeDetail extends Component {
     }
   }
 
-  recipeSelected () {
-    console.log('asfasdf')
-    this.props.recipeCompletePress()
+  getRecipeFromId (recipeId) {
+    return fetch(`https://testfirebase-5e2e2.firebaseio.com/Recipes/${recipeId}.json`)
+      .then(response => response.json())
+      .then(responseJson => {
+        return responseJson
+      })
+      .catch(error => {
+        console.error(error)
+      })
   }
 
-  componentDidMount () {
-    const { params } = this.props.navigation.state;
-    console.log(params)
+  getUserIngredientAmount (ingredientName) {
+    const { params } = this.props.navigation.state
+    return fetch(
+      `https://testfirebase-5e2e2.firebaseio.com/UserIngredients/${params.userId}/${ingredientName}.json`
+    )
+      .then(ingredient => ingredient.json())
+      .then(ingredientJson => {
+        return ingredientJson
+      })
+      .catch(error => {
+        console.error(error)
+      })
+
+  }
+
+  removeUserIngredByNameAndQuantity (ingredientName, quantity) {
+    const { params } = this.props.navigation.state
+    this.getUserIngredientAmount(ingredientName)
+      .then((ingredient) => {
+        firebase.database().ref('UserIngredients/' + params.userId).update({
+          [ingredientName]: {
+            quantity: parseFloat(ingredient['quantity'] - quantity),
+            type: ingredient['type']
+          }
+        })
+      })
+  }
+
+  completeRecipe () {
+    let recipe = this.state.recipe
+    const { navigate } = this.props.navigation
+    const { params } = this.props.navigation.state
+    {Object.keys(recipe.ingredients).forEach((ingredientId) => {
+      this.removeUserIngredByNameAndQuantity(
+        recipe.ingredients[ingredientId].name, parseFloat(recipe.ingredients[ingredientId].quantity)
+      )
+    })}
+    navigate('RecipesScreen', {userId: params.userId})
+  }
+
+  componentWillMount () {
+    const { params } = this.props.navigation.state
+    this.getRecipeFromId(params.recipeId)
+    .then((recipe) => {
+      this.setState({
+        recipe: recipe
+      })
+    })
   }
 
   render () {
     const recipe = this.state.recipe
     const { navigate } = this.props.navigation
     const { params } = this.props.navigation.state;
-    console.log(params)
     return (
-      <View style={styles.detailContainer}>
-        <View style={styles.imageContainer}>
-          <Image source={{uri: recipe.imageURL}} style={styles.recipeImage} />
-          <View style={styles.recipeNameServingTimeAndDifficultyContainer}>
-            <View style={styles.nameAndServingSize}>
-              <Text style={{fontSize: 25, color: 'white'}}>{recipe.name}</Text>
-              <Text style={styles.overlaidText}>Serves {recipe.servings}</Text>
-            </View>
-            <View style={styles.timeAndDifficultyContainer}>
-              <Text style={styles.overlaidText}>{recipe.time}</Text>
-              <Text style={styles.overlaidText}>Difficulty: {recipe.difficulty}</Text>
-            </View>
-          </View>
-        </View>
-        <View style={{borderWidth: 1, borderColor: '#bababa', padding: '5%', marginBottom: 20}}>
-          <View style={styles.ingredientsAndAppliancesContainer}>
-            <View style={styles.ingredientsContainer}>
-              <Text>Required Ingredients:</Text>
-              {Object.keys(recipe.ingredients).map((ingredientName, index) =>
-                <Text key={index}>
-                  {'- '}{recipe.ingredients[ingredientName].quantity}{' '}
-                  {recipe.ingredients[ingredientName].type}{' '}
-                  {ingredientName}
-                </Text>
-              )}
-            </View>
-            <View style={styles.appliancesContainer}>
-              <Text>Required Appliances:</Text>
-              {recipe.appliances.split(',').map((applianceName, index) =>
-                <Text key={index}>
-                  {applianceName}
-                </Text>
-              )}
-            </View>
-          </View>
-          <View style={styles.instructionsContiainer}>
-            {recipe.instructions.split('$$').map((instruction, index) =>
-              <View style={{paddingBottom: 10}} key={index}>
-                <Text style={{paddingBottom: 5}}>Step {index}:</Text>
-                <Text>{instruction}</Text>
+      <ScrollView>
+        <View style={styles.detailContainer}>
+          <View style={styles.imageContainer}>
+            <Image source={{uri: recipe.imageURL}} style={styles.recipeImage} />
+            <View style={styles.recipeNameServingTimeAndDifficultyContainer}>
+              <View style={styles.nameAndServingSize}>
+                <Text style={{fontSize: 25, color: 'white'}}>{recipe.name}</Text>
+                <Text style={styles.overlaidText}>Serves {recipe.servings}</Text>
               </View>
-            )}
+              <View style={styles.timeAndDifficultyContainer}>
+                <Text style={styles.overlaidText}>{recipe.time}</Text>
+                <Text style={styles.overlaidText}>Difficulty: {recipe.difficulty}</Text>
+              </View>
+            </View>
           </View>
+          <View style={{borderWidth: 1, borderColor: '#bababa', padding: '5%', marginBottom: 20}}>
+            <View style={styles.ingredientsAndAppliancesContainer}>
+              <View style={styles.ingredientsContainer}>
+                <Text>Required Ingredients:</Text>
+                {Object.keys(recipe.ingredients).map((ingredientId, index) =>
+                  <Text key={index}>
+                    {'- '}{recipe.ingredients[ingredientId].quantity}{' '}
+                    {recipe.ingredients[ingredientId].type}{' '}
+                    {recipe.ingredients[ingredientId].name}
+                  </Text>
+                )}
+              </View>
+              <View style={styles.appliancesContainer}>
+                <Text>Required Appliances:</Text>
+                {recipe.appliances.split(',').map((applianceName, index) =>
+                  <Text key={index}>
+                    {applianceName}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <View style={styles.instructionsContiainer}>
+              {recipe.instructions.split('$$').map((instruction, index) =>
+                <View style={{paddingBottom: 10}} key={index}>
+                  <Text style={{paddingBottom: 5}}>Step {index}:</Text>
+                  <Text>{instruction}</Text>
+                </View>
+              )}
+            </View>
+          </View>
+          <TouchableOpacity onPress={() => this.completeRecipe()}>
+            <View style={styles.button}>
+              <Text style={{color: 'white', fontSize: 20}}>Done Cooking</Text>
+              <Text style={{color: 'white', textAlign: 'center'}}>
+                (removes ingredients from your inventory)
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => navigate('RecipesScreen', {userID: 'lrg006'})}>
-          <View style={styles.button}>
-            <Text style={{color: 'white', fontSize: 20}}>Done Cooking</Text>
-            <Text style={{color: 'white', textAlign: 'center'}}>
-              (removes ingredients from your inventory)
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -185,6 +238,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 15
   }
 })

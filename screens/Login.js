@@ -80,37 +80,37 @@ export default class Login extends React.Component {
   render() {
     return(
       <View style={styles.container}>
-      <Image
-        style={styles.imageStyle}
-        source={require('../contemporary-cooking-utensil-sets.jpg')}>
-      </Image>
-      <Text style={styles.textStyle}>
-        Recipe Manager
-      </Text>
-      <View>
-        <TitledInput
-          label='Email Address'
-          placeholder ='you@domain.com'
-          value={this.state.email}
-          onChangeText={email => this.setState({email})}
-        />
-        <TitledInput
-          label='Name'
-          placeholder ='Jane Doe'
-          value={this.state.name}
-          onChangeText={name => this.setState({name})}
-        />
-        <TitledInput
-          label='Password'
-          autoCorrect={false}
-          placeholder ='**********'
-          secureTextEntry
-          value={this.state.password}
-          onChangeText={password => this.setState({password})}
-        />
-      <Text style={styles.errorTextStyle}>{this.state.error}</Text>
-      {this.renderButtonOrSpinner()}
-      </View>
+        <Image
+          style={styles.imageStyle}
+          source={require('../contemporary-cooking-utensil-sets.jpg')}>
+        </Image>
+        <Text style={styles.textStyle}>
+          Recipe Manager
+        </Text>
+        <View style={{height: 200, justifyContent: 'space-between'}}>
+          <TitledInput
+            label='Email Address'
+            placeholder ='you@domain.com'
+            value={this.state.email}
+            onChangeText={email => this.setState({email})}
+          />
+          <TitledInput
+            label='Name'
+            placeholder ='Jane Doe'
+            value={this.state.name}
+            onChangeText={name => this.setState({name})}
+          />
+          <TitledInput
+            label='Password'
+            autoCorrect={false}
+            placeholder ='**********'
+            secureTextEntry
+            value={this.state.password}
+            onChangeText={password => this.setState({password})}
+          />
+        <Text style={styles.errorTextStyle}>{this.state.error}</Text>
+        {this.renderButtonOrSpinner()}
+        </View>
       </View>
     );
   }
@@ -118,13 +118,12 @@ export default class Login extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-  //  flex: 6,
     backgroundColor: '#fff',
     //alignItems: 'center',
     //justifyContent: 'center',
-    padding: 50,
     paddingTop: 40,
-    //paddingLeft:5
+    padding: 50,
+    height: '100%'
   },
   textStyle: {
     fontSize: 62,

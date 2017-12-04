@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather'
 
 export default class RecipePreview extends Component {
+
   render () {
     return (
       <View style={styles.previewContainer}>

@@ -13,8 +13,8 @@ const IngredientsScreenNavigator = ({ navigation }) => (
 const MainAppNavigator = StackNavigator(
   {
     LoginScreen: { screen: Login },
-    IngredientsScreen: { screen: Ingredients },
     RecipesScreen: { screen: Recipes },
+    IngredientsScreen: { screen: Ingredients },
     RecipeDetailScreen: { screen: RecipeDetail },
   },
   {
