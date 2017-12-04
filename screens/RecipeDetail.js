@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Button, TouchableOpacity, ScrollView } from 'react-native';
 import * as firebase from 'firebase';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class RecipeDetail extends Component {
 
@@ -30,7 +31,7 @@ export default class RecipeDetail extends Component {
   }
 
   getRecipeFromId (recipeId) {
-    return fetch(`https://testfirebase-5e2e2.firebaseio.com/Recipes/${recipeId}.json`)
+    return fetch(`https://testfirebase-5e2e2.firebaseio.com/Recipes/0.json`)
       .then(response => response.json())
       .then(responseJson => {
         return responseJson
@@ -82,7 +83,7 @@ export default class RecipeDetail extends Component {
 
   componentWillMount () {
     const { params } = this.props.navigation.state
-    this.getRecipeFromId(params.recipeId)
+    this.getRecipeFromId(params.userId)
     .then((recipe) => {
       this.setState({
         recipe: recipe
@@ -98,6 +99,18 @@ export default class RecipeDetail extends Component {
       <ScrollView>
         <View style={styles.detailContainer}>
           <View style={styles.imageContainer}>
+            <View style={{position: 'absolute', zIndex: 2, left: 10, top: 10, width: 35, height: 35}}>
+              <Icon.Button
+                type='ionicon'
+                name='ios-arrow-dropup-outline'
+                size={30} color='white'
+                onPress={() =>navigate('RecipesScreen', {userId: params.userId})}
+                style={{
+                  padding: 0, margin: 0
+                }}
+                backgroundColor='rgba(0, 0, 0, 0.25)'
+              />
+            </View>
             <Image source={{uri: recipe.imageURL}} style={styles.recipeImage} />
             <View style={styles.recipeNameServingTimeAndDifficultyContainer}>
               <View style={styles.nameAndServingSize}>

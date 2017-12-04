@@ -35,7 +35,7 @@ export default class Login extends React.Component {
   createUserIngredientsEntry (userId) {
     const { navigate } = this.props.navigation
     firebase.database().ref('UserIngredients/' + userId).set({
-      bananas: {
+      bananas: { // Give new users some ingredient to help them understand how it works
         quantity: 0,
         type: ''
       }
