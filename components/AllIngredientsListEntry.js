@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Button } from 'react-native'
 
 const AllIngredientsListEntry = (props) => {
-
   return (
     <View style={styles.entryContainer}>
       <View style={{paddingLeft: 15}}>

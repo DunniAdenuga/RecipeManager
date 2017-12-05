@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, FlatList, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import UserIngredientsListEntry from '../components/UserIngredientsListEntry'
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,6 +19,7 @@ export default class UserIngredients extends React.Component {
     tabBarLabel: 'Your Ingredients',
   };
 
+  // Gets all ingredients the User has in their inventory
   getUserIngredients (userId) {
     return fetch(`https://testfirebase-5e2e2.firebaseio.com/UserIngredients/${userId}.json`)
       .then(response => response.json())
@@ -30,6 +31,7 @@ export default class UserIngredients extends React.Component {
       })
   }
 
+  // Gets a specific ingredient from User's inventory -- useful for updates of specific entries
   async getIngredient (userId, ingredientName) {
     try {
       let ingredient = await fetch(
@@ -52,6 +54,7 @@ export default class UserIngredients extends React.Component {
       })
   }
 
+  // When one entry in User's inventory changes, call this to update state accordingly
   updateQuantities (ingredientName) {
     const ingredients = this.state.ingredients
     const { params } = this.props.navigation.state
@@ -75,12 +78,11 @@ export default class UserIngredients extends React.Component {
     let ingredients = this.state.ingredients
     const { navigate } = this.props.navigation
     const { params } = this.props.navigation.state
-    console.log(ingredients)
     return (
       <View style={styles.ingredientsContainer}>
         <View style={styles.header}>
-          <Text style={{fontSize: 25, color: 'white'}}>Your Ingredients</Text>
-          <View style={{position: 'absolute', right: 20, top: 22}}>
+          <Text style={styles.headerText}>Your Ingredients</Text>
+          <View style={styles.recipeButtonConatiner}>
             <Icon.Button
               type='ionicon'
               name='ios-map-outline'
@@ -93,7 +95,7 @@ export default class UserIngredients extends React.Component {
             />
         </View>
         </View>
-        <View style={styles.ingredientsListContainer}>
+        <ScrollView>
           {Object.keys(ingredients).map((ingredientName, index) =>
             <UserIngredientsListEntry
               ingredientName={ingredientName}
@@ -109,7 +111,7 @@ export default class UserIngredients extends React.Component {
               fromAllIngredients={false}
             />
           )}
-        </View>
+        </ScrollView>
       </View>
     )
   }
@@ -130,5 +132,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     flexDirection: 'row',
     position: 'relative'
+  },
+  headerText: {
+    fontSize: 25,
+    color: 'white'
+  },
+  recipeButtonConatiner: {
+    position: 'absolute',
+    right: 10,
+    top: 22
   }
 })

@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableHighlight, Ap
 import RecipePreview from '../components/RecipePreview';
 import Icon from 'react-native-vector-icons/Feather'
 import Swiper from 'react-native-swiper'
+import { getUserIngredients, getAllRecipes } from '../network/Requests'
+
 
 export default class Recipes extends Component {
   constructor (props) {
@@ -40,6 +42,49 @@ export default class Recipes extends Component {
     }
   }
 
+  getMatchingRecipes (userId) {
+    return getUserIngredients(userId)
+      .then((ingredients) => {
+        getAllRecipes()
+          .then((recipes) => {
+            let recipes2 = gerRecipes(recipes, ingredients)
+            console.log(recipes2)
+            return recipes2
+          })
+      })
+  }
+
+  gerRecipes (recipes, userIngredients) {
+    let userRecipes = [];
+    recipes.forEach((recipe, index) => {
+      if (this.userHasIngredients(recipe['ingredients'], userIngredients)) {
+        userRecipes.push(index)
+      }
+    })
+    console.log(userRecipes)
+    return userRecipes
+  }
+
+  userHasIngredients (recipeIngredients, userIngredients) {
+    let numberOfCorrectIngredients = 0
+    Object.keys(recipeIngredients).forEach((ingredientId) => {
+      let ingredientName = recipeIngredients[ingredientId]['name']
+      let ingredientQuantity = recipeIngredients[ingredientId]['quantity']
+      if (userIngredients.hasOwnProperty(ingredientName)) {
+        if (userIngredients[ingredientName]['quantity'] >= ingredientQuantity) {
+          numberOfCorrectIngredients += 1
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    })
+    if (numberOfCorrectIngredients >= Object.keys(recipeIngredients).length) {
+      return true
+    }
+  }
+
   async getRecipeFromId (recipeId) {
     try {
       let response = await fetch(`https://testfirebase-5e2e2.firebaseio.com/Recipes/${recipeId}.json`)
@@ -65,18 +110,47 @@ export default class Recipes extends Component {
           })
         })
     })}
+
+    getAllRecipes()
+      .then((allRecipes) => {
+        this.setState({
+          allRecipes: allRecipes
+        })
+      })
+
+    getUserIngredients(params.userId)
+      .then((userIngredients) => {
+        this.setState({
+          userIngredients: userIngredients
+        })
+      })
   }
 
+  updateRecipes () {
+    let recipeIds = this.gerRecipes(this.state.allRecipes, this.state.userIngredients)
+    let recipesTwo = {}
+    {recipeIds.forEach((recipeId) => {
+      this.getRecipeFromId(recipeId)
+        .then((newRecipe) => {
+          recipesTwo[recipeId] = newRecipe
+          this.setState({
+            recipesTwo
+          })
+        })
+    })}
+    this.forceUpdate()
+  }
+
+  // Increments swiper component's index
+  // NOTE: broken atm
   nextRecipe () {
     this.swiper.scrollBy(1)
   }
 
+  // Decrements swiper component's index
+  // NOTE: broken atm
   prevRecipe () {
     this.swiper.scrollBy(-1)
-  }
-
-  recipeSelected (stuff) {
-    this.props.recipePress(stuff)
   }
 
   render() {
@@ -93,6 +167,18 @@ export default class Recipes extends Component {
               size={25}
               color='black'
               onPress={() => navigate('IngredientsScreen', {userId: params.userId})}
+              backgroundColor='transparent'
+              style={{
+                padding: 0, margin: 0
+              }}
+            />
+          </View>
+          <View style={styles.loadRecipesIcon}>
+            <Icon.Button
+              name='shopping-cart'
+              size={25}
+              color='red'
+              onPress={() => this.updateRecipes()}
               backgroundColor='transparent'
               style={{
                 padding: 0, margin: 0
@@ -147,7 +233,6 @@ export default class Recipes extends Component {
                   backgroundColor='transparent'
                 />
               </View>
-
           </View>
           <View style={styles.recipeButtonContainer}>
               <View style={styles.circle}>
@@ -201,6 +286,11 @@ const styles = StyleSheet.create({
   ingredientsIcon: {
     position: 'absolute',
     right: 15,
+    bottom: 15
+  },
+  loadRecipesIcon: {
+    position: 'absolute',
+    left: 15,
     bottom: 15
   },
   swiperContainer: {

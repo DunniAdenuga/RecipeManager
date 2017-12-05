@@ -3,19 +3,19 @@ import { StyleSheet, Text, View, TextInput} from 'react-native';
 
 const TitledInput = ({ label, value, onChangeText, placeholder, secureTextEntry}) => {
 
-  const { inputStyle, labelStyle, containerStyle } = styles;
+  const { input, labelStyle, container, inputContainer } = styles;
 
   return (
-    <View style={containerStyle}>
+    <View style={container}>
       <Text style={labelStyle}>{label.toUpperCase()}</Text>
-      <View style={{borderBottomWidth: 1, borderColor: '#D4D4D4'}}>
+      <View style={inputContainer}>
         <TextInput
           autoCorrect={false}
           placeholder={placeholder}
           secureTextEntry={secureTextEntry}
           value={value}
           onChangeText={onChangeText}
-          style={inputStyle}
+          style={input}
         />
       </View>
     </View>
@@ -23,20 +23,23 @@ const TitledInput = ({ label, value, onChangeText, placeholder, secureTextEntry}
 };
 
 const styles = {
-  inputStyle: {
+  input: {
     color: '#262626',
     fontSize: 18,
     fontWeight: '200',
+  },
+  inputContainer: {
+    borderBottomWidth: 1,
+    borderColor: '#D4D4D4'
   },
   labelStyle: {
     color: '#7F7D7D',
     fontSize: 12,
     fontWeight: '200',
   },
-  containerStyle: {
+  container: {
     height: 45,
     flexDirection: 'column',
-    //alignItems: 'flex-start',
     width: '100%',
   }
 };

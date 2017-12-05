@@ -5,12 +5,12 @@ import AllIngredientsListEntry from '../components/AllIngredientsListEntry'
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as firebase from 'firebase';
 
-export default class UserIngredients extends React.Component {
+export default class AllIngredients extends React.Component {
   constructor (props) {
     super (props)
     this.state = {
       ingredients: {
-        bananas: 1 // for when render runs first time, this gets overwritten by getIngredients
+        bananas: 1 // For when render runs first time, this gets overwritten by getIngredients
       }
     }
   }
@@ -19,6 +19,7 @@ export default class UserIngredients extends React.Component {
     tabBarLabel: 'All Ingredients',
   };
 
+  // Returns all ingredients in our Ingredient table in firebase
   async getAllIngredients () {
     try {
       let ingreds = await fetch(
@@ -40,6 +41,8 @@ export default class UserIngredients extends React.Component {
       })
   }
 
+  // Adds a new entry to User's Ingredients table
+  // NOTE: This overrides previous entries under same ingredientName if it already exists
   addIngredientToUserIngreds (ingredientId) {
     const { params } = this.props.navigation.state
     let allIngredients = this.state.ingredients
@@ -56,8 +59,8 @@ export default class UserIngredients extends React.Component {
     return (
       <View style={styles.ingredientsContainer}>
         <View style={styles.header}>
-          <Text style={{fontSize: 25, color: 'white'}}>All Ingredients</Text>
-          <View style={{position: 'absolute', right: 20, top: 22}}>
+          <Text style={styles.headerText}>All Ingredients</Text>
+          <View style={styles.recipeButtonConatiner}>
             <Icon.Button
               type='ionicon'
               name='ios-map-outline'
@@ -102,5 +105,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     flexDirection: 'row',
     position: 'relative'
+  },
+  headerText: {
+    fontSize: 25,
+    color: 'white'
+  },
+  recipeButtonConatiner: {
+    position: 'absolute',
+    right: 10,
+    top: 22
   }
 })

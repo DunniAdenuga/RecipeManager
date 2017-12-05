@@ -18,11 +18,13 @@ export default class Login extends React.Component {
     }
   }
 
+  // Sets nav options for StackNavigator (only appears if we set headers, which we don't)
   static navigationOptions = {
     title: 'Welcome',
     headerTintColor: 'blue'
   };
 
+  // Adds user to firebase
   createUser (userId, name, password) {
     firebase.database().ref('Users/' + userId).set(
       {
@@ -32,6 +34,7 @@ export default class Login extends React.Component {
     )
   }
 
+  // Initializes User's UserIngredients table in firebase
   createUserIngredientsEntry (userId) {
     const { navigate } = this.props.navigation
     firebase.database().ref('UserIngredients/' + userId).set({
@@ -43,7 +46,7 @@ export default class Login extends React.Component {
     .then(navigate('IngredientsScreen', {userId: this.state.email.split('@')[0]}))
   }
 
-  onLoginPress(){
+  onLoginPress () {
     this.setState({ error: '', loading: true});
     const { email, password } = this.state;
     const { navigate } = this.props.navigation
@@ -109,7 +112,7 @@ export default class Login extends React.Component {
             onChangeText={password => this.setState({password})}
           />
         <Text style={styles.errorTextStyle}>{this.state.error}</Text>
-        {this.renderButtonOrSpinner()}
+          {this.renderButtonOrSpinner()}
         </View>
       </View>
     );
@@ -119,8 +122,6 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    //alignItems: 'center',
-    //justifyContent: 'center',
     paddingTop: 40,
     padding: 50,
     height: '100%'

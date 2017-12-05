@@ -8,7 +8,7 @@ export default class RecipeDetail extends Component {
   constructor (props) {
     super (props)
     this.state = {
-      recipe: {
+      recipe: { // Placeholder recipe for initial rendering, gets overridden when component mounts
         name: 'Banana Bread',
         appliances: 'Oven, Stove',
         imageURL: 'http://www.simplyrecipes.com/wp-content/uploads/2014/08/banana-bread-horiz-a-1600.jpg',
@@ -30,8 +30,10 @@ export default class RecipeDetail extends Component {
     }
   }
 
+  // Takes a recipeId and returns its entry in the Recipes table from firebase
   getRecipeFromId (recipeId) {
-    return fetch(`https://testfirebase-5e2e2.firebaseio.com/Recipes/0.json`)
+    console.log(recipeId)
+    return fetch(`https://testfirebase-5e2e2.firebaseio.com/Recipes/${recipeId}.json`)
       .then(response => response.json())
       .then(responseJson => {
         return responseJson
@@ -41,6 +43,7 @@ export default class RecipeDetail extends Component {
       })
   }
 
+  // Looks in the User's Ingredients table to see how much of this ingredient they have
   getUserIngredientAmount (ingredientName) {
     const { params } = this.props.navigation.state
     return fetch(
@@ -53,9 +56,9 @@ export default class RecipeDetail extends Component {
       .catch(error => {
         console.error(error)
       })
-
   }
 
+  // Removes quantity of ingredient from User's Ingredient table according to the Recipe
   removeUserIngredByNameAndQuantity (ingredientName, quantity) {
     const { params } = this.props.navigation.state
     this.getUserIngredientAmount(ingredientName)
@@ -83,7 +86,7 @@ export default class RecipeDetail extends Component {
 
   componentWillMount () {
     const { params } = this.props.navigation.state
-    this.getRecipeFromId(params.userId)
+    this.getRecipeFromId(params.recipeId)
     .then((recipe) => {
       this.setState({
         recipe: recipe
@@ -99,7 +102,7 @@ export default class RecipeDetail extends Component {
       <ScrollView>
         <View style={styles.detailContainer}>
           <View style={styles.imageContainer}>
-            <View style={{position: 'absolute', zIndex: 2, left: 10, top: 10, width: 35, height: 35}}>
+            <View style={styles.backButtonContainer}>
               <Icon.Button
                 type='ionicon'
                 name='ios-arrow-dropup-outline'
@@ -123,7 +126,7 @@ export default class RecipeDetail extends Component {
               </View>
             </View>
           </View>
-          <View style={{borderWidth: 1, borderColor: '#bababa', padding: '5%', marginBottom: 20}}>
+          <View style={styles.ingredientDetailContainer}>
             <View style={styles.ingredientsAndAppliancesContainer}>
               <View style={styles.ingredientsContainer}>
                 <Text>Required Ingredients:</Text>
@@ -175,6 +178,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#fcfcfc'
+  },
+  backButtonContainer: {
+    position: 'absolute',
+    zIndex: 2,
+    left: 10,
+    top: 10,
+    width: 35,
+    height: 35
   },
   imageContainer: {
     width: '95%',
@@ -229,6 +240,12 @@ const styles = StyleSheet.create({
   },
   overlaidText: {
     color: 'white',
+  },
+  ingredientDetailContainer: {
+    borderWidth: 1,
+    borderColor: '#bababa',
+    padding: '5%',
+    marginBottom: 20
   },
   ingredientsAndAppliancesContainer: {
     width: '90%',
