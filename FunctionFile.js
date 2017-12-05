@@ -8,6 +8,22 @@ import * as firebase from 'firebase';
     //var userIngredients = [];
     //var Recipes = [];
 
+    /*getUserIngredient(userId)
+    .then((data) =>{
+      //console.log(data)
+      userIngredients = data
+      console.log(userIngredients);
+    });
+    //console.log(userIngredients);
+
+    getRecipes()
+    .then((data) =>{
+      Recipes = data
+      console.log(Recipes);
+    });
+    //console.log(Recipes);
+    //console.log(this.state.Recipes);*/
+
     Object.entries(Recipes).forEach(([key, value]) =>{
         //console.log("into1");
         if(value.hasOwnProperty("ingredients")){
