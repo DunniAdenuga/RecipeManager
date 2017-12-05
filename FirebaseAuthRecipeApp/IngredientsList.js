@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import { Select, Option, OptionList, updatePosition } from 'react-native-dropdown';
 import * as firebase from 'firebase';
 
 
@@ -107,7 +106,7 @@ componentWillMount(){
 
 }
 
-class DropdownComponent extends React.Component{
+/*class DropdownComponent extends React.Component{
 
   constructor(props) {
       super(props);
@@ -152,7 +151,7 @@ class DropdownComponent extends React.Component{
     </View>
     );
   }
-}
+}*/
 
 const ListItem = ({ingredientName, ingredientQuantity, onChangeText}) => {
   const { container, textStyle } = styles;
@@ -167,7 +166,6 @@ const ListItem = ({ingredientName, ingredientQuantity, onChangeText}) => {
     keyboardType='numeric'
     onChangeText={onChangeText}
     />
-    <DropdownComponent />
     </View>
   );
 };
