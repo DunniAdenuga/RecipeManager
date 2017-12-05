@@ -25,7 +25,7 @@ import * as firebase from 'firebase';
     //console.log(this.state.Recipes);*/
 
     Object.entries(Recipes).forEach(([key, value]) =>{
-        //console.log("into1");
+        console.log("into1");
         if(value.hasOwnProperty("ingredients")){
           let chooseRecipe = true;
           //console.log("we dey here");
@@ -34,7 +34,7 @@ import * as firebase from 'firebase';
           if(key2 == 'ingredients'){
               console.log("\n");
             Object.entries(value2).forEach(([key3, value3]) =>{
-              console.log("Ingredient Detailssssss");
+              //console.log("Ingredient Detailssssss");
               Object.entries(value3).forEach(([key4, value4]) =>{
                 //console.log(`${key4} ${value4}`);
                 if(key4 == 'name'){
@@ -71,12 +71,13 @@ import * as firebase from 'firebase';
         result = false;
         //console.log("Ingredient Name: " + ingredientName);
         //console.log(this.state.userIngredient);
-        Object.entries(userIngredients).forEach((key, value)=>{
+        console.log("ingredientName: " + ingredientName);
+        Object.entries(userIngredients).forEach(([key, value])=>{
           //Object.entries(value).forEach(([key2, value2])=> {
-          console.log("ingredientName: " + ingredientName);
           console.log("key: " + key);
-            if(key === ingredientName){
+            if(key == ingredientName){
               result = true;
+              console.log(result);
             }
           //});
         });
